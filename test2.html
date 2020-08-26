@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>requestAnimationFrame test</title>
+  </head>
+  <body>
+    <p><code id="fps">js</code></p>
+    <p><code id="ft">missing</code></p>
+  <script>
+const efps = document.getElementById("fps");
+const eft = document.getElementById("ft");
+
+const fpsshow = (t, f) => {
+  const tn = performance.now();
+  const td = tn - t;
+  const tf = td / f;
+  const fps = 1000 * f / td;
+  efps.textContent = "" + fps.toFixed(3) + " F/s";
+  eft.textContent = "" + tf.toFixed(3) + " ms/F";
+  return tn;
+};
+
+let t = performance.now();
+let f = 0;
+
+const draw = () => {
+  f++;
+  if (f === 1000) {
+    t = fpsshow(t, f);
+    f = 0;
+  }
+
+  requestAnimationFrame(draw);
+};
+
+draw();
+
+eft.textContent = "running";
+  </script>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebGL solid color test</title>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <p><code id="fps">js</code></p>
+    <p><code id="ft">missing</code></p>
+  <script>
+const efps = document.getElementById("fps");
+const eft = document.getElementById("ft");
+const canvas = document.getElementById("canvas");
+canvas.addEventListener("webglcontextcreationerror", e => { efps.textContent = "canvas"; });
+const gl = canvas.getContext("webgl");
+
+const fpsshow = (t, f) => {
+  const tn = performance.now();
+  const td = tn - t;
+  const tf = td / f;
+  const fps = 1000 * f / td;
+  efps.textContent = "" + fps.toFixed(3) + " F/s";
+  eft.textContent = "" + tf.toFixed(3) + " ms/F";
+  return tn;
+};
+
+gl.clearColor(0.7, 0.6, 0.5, 1.0);
+
+let t = performance.now();
+let f = 0;
+
+const draw = () => {
+  gl.clear(gl.COLOR_BUFFER_BIT);
+
+  f++;
+  if (f === 1000) {
+    t = fpsshow(t, f);
+    f = 0;
+  }
+
+  requestAnimationFrame(draw);
+};
+
+draw();
+
+eft.textContent = "running";
+  </script>
+  </body>
+</html>
