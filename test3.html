@@ -1,54 +1,54 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>CSS render test</title>
+	<head>
+		<title>CSS render test</title>
 <style>
 #move {
-  height: 150px;
-  width: 100px;
-  background-color: #e0d0c0;
-  animation: 1s linear infinite alternate backnforth;
+	height: 150px;
+	width: 100px;
+	background-color: #e0d0c0;
+	animation: 1s linear infinite alternate backnforth;
 }
 @keyframes backnforth {
-  from { transform: translateX(0px); }
-  to { transform: translateX(200px); }
+	from { transform: translateX(0px); }
+	to { transform: translateX(200px); }
 }
 </style>
-  </head>
-  <body>
-    <div id="move"></div>
-    <p><code id="fps">js</code></p>
-    <p><code id="ft">missing</code></p>
-  <script>
+	</head>
+	<body>
+		<div id="move"></div>
+		<p><code id="fps">js</code></p>
+		<p><code id="ft">missing</code></p>
+	<script>
 const efps = document.getElementById("fps");
 const eft = document.getElementById("ft");
 
 const fpsshow = (t, f) => {
-  const tn = performance.now();
-  const td = tn - t;
-  const tf = td / f;
-  const fps = 1000 * f / td;
-  efps.textContent = "" + fps.toFixed(3) + " F/s";
-  eft.textContent = "" + tf.toFixed(3) + " ms/F";
-  return tn;
+	const tn = performance.now();
+	const td = tn - t;
+	const tf = td / f;
+	const fps = 1000 * f / td;
+	efps.textContent = "" + fps.toFixed(3) + " F/s";
+	eft.textContent = "" + tf.toFixed(3) + " ms/F";
+	return tn;
 };
 
 let t = performance.now();
 let f = 0;
 
 const draw = () => {
-  f++;
-  if (f === 1000) {
-    t = fpsshow(t, f);
-    f = 0;
-  }
+	f++;
+	if (f === 1000) {
+		t = fpsshow(t, f);
+		f = 0;
+	}
 
-  requestAnimationFrame(draw);
+	requestAnimationFrame(draw);
 };
 
 draw();
 
 eft.textContent = "running";
-  </script>
-  </body>
+	</script>
+	</body>
 </html>
