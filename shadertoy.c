@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -38,15 +39,15 @@ int main (void) {
 	unsigned const bufferlen = 1024;
 	char buffer [bufferlen];
 
-	GLchar const *const shadervertexsource = 
-		"#version 100 es\n"
+	GLchar const * shadervertexsource =
+		"#version 110\n"
 		"attribute vec2 aposition;\n"
 		"varying lowp vec2 vposition;\n"
 		"void main (void) {\n"
 		"	gl_Position = vec4(aposition, 0.0, 1.0);\n"
 		"	vposition = aposition;\n"
 		"}\n";
-	GLint shadervertexsourcelen = sizeof shadervertexsource - 1;
+	GLint shadervertexsourcelen = strlen(shadervertexsource);
 	GLuint shadervertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(shadervertex, 1, &shadervertexsource, &shadervertexsourcelen);
 	glCompileShader(shadervertex);
@@ -56,13 +57,13 @@ int main (void) {
 	puts("Source:");
 	fputs(shadervertexsource, stdout);
 
-	GLchar const *const shaderfragmentsource = 
-		"#version 100 es\n"
+	GLchar const * shaderfragmentsource =
+		"#version 110\n"
 		"varying lowp vec2 vposition;\n"
 		"void main (void) {\n"
 		"	gl_FragColor = vec4(0.7, 0.6, 0.5, 1.0);\n"
 		"}\n";
-	GLint shaderfragmentsourcelen = sizeof shaderfragmentsource - 1;
+	GLint shaderfragmentsourcelen = strlen(shaderfragmentsource);
 	GLuint shaderfragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(shaderfragment, 1, &shaderfragmentsource, &shaderfragmentsourcelen);
 	glCompileShader(shaderfragment);
