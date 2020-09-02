@@ -5,7 +5,7 @@
 
 void fpsshow (
 	struct timespec * t,
-	unsigned f
+	unsigned int f
 ) {
 	struct timespec tn;
 	clock_gettime(CLOCK_MONOTONIC, &tn);
@@ -35,7 +35,7 @@ int main (void) {
 
 	struct timespec t;
 	int time_error = clock_gettime(CLOCK_MONOTONIC, &t);
-	unsigned f = 0;
+	unsigned int f = 0;
 	if (time_error != 0) {
 		puts("Time error");
 		return 1;
