@@ -4,5 +4,5 @@
     name = "gltest";
     path = ./.;
   };
-  buildInputs = [ pkgs.glfw ];
+  buildInputs = [ pkgs.glew pkgs.glfw ];
 }
