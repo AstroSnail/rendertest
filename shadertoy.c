@@ -1,9 +1,16 @@
 #include <stdio.h>
-#include <string.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-int main (void) {
+int main (
+	int argc,
+	char * * argv
+) {
+	if (argc != 2) {
+		puts("Usage: shadertoy <shaderfile>");
+		return 1;
+	}
+
 	int glfwinit = glfwInit();
 	if (glfwinit != GLFW_TRUE) {
 		puts("GLFW error");
@@ -28,8 +35,7 @@ int main (void) {
 	glGenBuffers(1, &vertexbuffer);
 
 	GLfloat vertices [3][2] = {
-		//{-1.0, -1.0}, {3.0, -1.0}, {-1.0, 3.0}
-		{-0.5, -0.5}, {0.5, -0.5}, {-0.5, 0.5}
+		{-1.0, -1.0}, {3.0, -1.0}, {-1.0, 3.0}
 	};
 	glBindBuffer(GL_ARRAY_BUFFER, vertexbuffer);
 	glBufferData(GL_ARRAY_BUFFER, sizeof vertices, &vertices, GL_STATIC_DRAW);
@@ -39,39 +45,31 @@ int main (void) {
 	unsigned const bufferlen = 1024;
 	char buffer [bufferlen];
 
-	GLchar const * shadervertexsource =
+	char shadervertexsource [] =
 		"#version 110\n"
-		"attribute vec2 aposition;\n"
-		"varying lowp vec2 vposition;\n"
-		"void main (void) {\n"
-		"	gl_Position = vec4(aposition, 0.0, 1.0);\n"
-		"	vposition = aposition;\n"
-		"}\n";
-	GLint shadervertexsourcelen = strlen(shadervertexsource);
+		"attribute vec2 aposition;"
+		"varying vec2 vposition;"
+		"void main (void) {"
+			"gl_Position = vec4(aposition, 0.0, 1.0);"
+			"vposition = aposition;"
+		"}";
+	GLint shadervertexsourcelen = sizeof shadervertexsource - 1;
+	GLchar const * shadervertexsourcep = shadervertexsource;
 	GLuint shadervertex = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(shadervertex, 1, &shadervertexsource, &shadervertexsourcelen);
+	glShaderSource(shadervertex, 1, &shadervertexsourcep, &shadervertexsourcelen);
 	glCompileShader(shadervertex);
-	puts("Vertex shader:");
-	glGetShaderInfoLog(shadervertex, bufferlen, NULL, buffer);
-	fputs(buffer, stdout);
-	puts("Source:");
-	fputs(shadervertexsource, stdout);
 
-	GLchar const * shaderfragmentsource =
-		"#version 110\n"
-		"varying lowp vec2 vposition;\n"
-		"void main (void) {\n"
-		"	gl_FragColor = vec4(0.7, 0.6, 0.5, 1.0);\n"
-		"}\n";
-	GLint shaderfragmentsourcelen = strlen(shaderfragmentsource);
+	FILE * shaderfragmentfile = fopen(argv[1], "r");
+	unsigned shaderfragmentsourcelenmax = 1024;
+	char shaderfragmentsource [shaderfragmentsourcelenmax];
+	GLchar const * shaderfragmentsourcep = shaderfragmentsource;
+	GLint shaderfragmentsourcelen = fread(shaderfragmentsource, 1, shaderfragmentsourcelenmax, shaderfragmentfile);
+	fclose(shaderfragmentfile);
 	GLuint shaderfragment = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(shaderfragment, 1, &shaderfragmentsource, &shaderfragmentsourcelen);
+	glShaderSource(shaderfragment, 1, &shaderfragmentsourcep, &shaderfragmentsourcelen);
 	glCompileShader(shaderfragment);
-	puts("Fragment shader:");
 	glGetShaderInfoLog(shaderfragment, bufferlen, NULL, buffer);
 	fputs(buffer, stdout);
-	puts("Source:");
-	fputs(shaderfragmentsource, stdout);
 
 	GLuint shaderprogram = glCreateProgram();
 	glAttachShader(shaderprogram, shadervertex);
@@ -80,10 +78,7 @@ int main (void) {
 	glLinkProgram(shaderprogram);
 	glUseProgram(shaderprogram);
 
-	glClearColor(0.4, 0.3, 0.2, 0.0);
-
 	while (1) {
-		glClear(GL_COLOR_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glfwSwapBuffers(window);
 	}
